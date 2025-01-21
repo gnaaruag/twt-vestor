@@ -66,10 +66,6 @@ const Navbar = () => {
               </li>
             </ul>
             <div className="navbar-actions">
-              <div className="like-count">
-                <Image src={"/like.svg"} alt="like" width={20} height={20} />
-                <span>{likeCount}</span>
-              </div>
               <UserButton />
             </div>
           </div>

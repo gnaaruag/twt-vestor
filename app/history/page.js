@@ -6,7 +6,6 @@ import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
 import { SignedIn, SignedOut } from "@clerk/clerk-react";
 
-
 export default function History() {
   const { isLoaded, user } = useUser();
   const [history, setHistory] = useState([]);
@@ -108,18 +107,20 @@ export default function History() {
             {history.map((item, index) => (
               <div
                 key={index}
-                className="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
+                className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex flex-col items-center justify-center gap-4"
               >
                 <Tweet id={item.url.split("/").pop()} />
-                <p className="mt-4 text-sm text-gray-700">
-                  Profitability: {item.profitability}
-                </p>
-                <p className="text-sm text-gray-700">
-                  Likes at Sale: {item.likeCount}
-                </p>
-                <p className="text-sm text-gray-700">
-                  Likes Gained: {item.likeDifference}
-                </p>
+                <div className="flex justify-center items-center gap-4">
+                  <p className=" text-sm text-gray-700">
+                    Profitability: {item.profitability}
+                  </p>
+                  <p className="text-sm text-gray-700">
+                    Likes at Sale: {item.likeCount}
+                  </p>
+                  <p className="text-sm text-gray-700">
+                    Likes Gained: {item.likeDifference}
+                  </p>
+                </div>
               </div>
             ))}
           </div>
