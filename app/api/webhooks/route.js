@@ -55,9 +55,9 @@ export async function POST(req) {
   try {
     // Handle the `user.created` event
     if (eventType === "user.created") {
-      const { email_addresses } = evt.data;
+      const { email_addresses, username, image_url } = evt.data;
       const email = email_addresses[0].email_address;
-
+      console.log(email, username);
       console.log("Received user.created event for email:", email);
 
       // Connect to MongoDB
@@ -70,10 +70,12 @@ export async function POST(req) {
       } else {
         // Create a new user
         const newUser = new UserModel({
+          username: username,
           email,
-          likeCount: 500,
+          likeCount: 1000,
           positions: [],
           history: [],
+          image_url
         });
         await newUser.save();
         console.log("New user saved successfully:", newUser);

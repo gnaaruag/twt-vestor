@@ -77,8 +77,8 @@ export async function POST(request) {
     // Remove the position from the user's positions array
     user.positions.splice(positionIndex, 1);
 
-    // Add the position to the user's history array
-    user.history.push(url);
+    // Add the difference to the user's history array
+    user.history.push(baseUrl+ '*' + likeDifference + '*' + currentLikeCount );
 
     // Save the updated user document
     await user.save();
@@ -94,6 +94,7 @@ export async function POST(request) {
       { status: 200 }
     );
   } catch (error) {
+	console.log(error);
     return new Response(
       JSON.stringify({ success: false, message: "Internal server error", error: error.message }),
       { status: 500 }
