@@ -19,7 +19,7 @@ export default function Home() {
   const [tweetId, setTweetId] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDeleting, setIsDeleting] = useState({});
-  const [likeCount, setLikeCount] = useState(0);
+  const [likeCount, setLikeCount] = useState("loading");
 
   useEffect(() => {
     if (!isLoaded || !user) return;
@@ -292,6 +292,7 @@ export default function Home() {
                   <li>Buy low, sell High</li>
                   <li>You can buy atmost 5 posts at any given time</li>
                   <li>You might end up on the leaderboard so show your best self by uploading a custom pfp</li>
+                  <li>Beware: if op deletes their post, you{"'"}ll be rugpulled</li>
                 </ul>
                 </div>
               </div>

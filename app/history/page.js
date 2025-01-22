@@ -12,7 +12,7 @@ export default function History() {
   const [history, setHistory] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [likeCount, setLikeCount] = useState(0);
+  const [likeCount, setLikeCount] = useState("loading");
 
   useEffect(() => {
     if (!isLoaded || !user) {
