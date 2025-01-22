@@ -63,8 +63,23 @@ export default function Home() {
       }
     };
 
+    const fetchLikeCount = async () => {
+      const email = user.primaryEmailAddress?.emailAddress;
+      const likeCountRes = await fetch("/api/fetch-sum", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const likeCountData = await likeCountRes.json();
+      if (likeCountData.success) {
+        setLikeCount(likeCountData.likeCount || 0);
+      }
+      console.log(likeCountData);
+    };
+
+    fetchLikeCount();
     fetchPositions();
-  }, [isLoaded, user]);
+  }, [isLoaded, user, positions.length]);
 
   const handleAddPosition = async () => {
     if (positions.length >= 5) {
@@ -188,24 +203,24 @@ export default function Home() {
   return (
     <div>
       <SignedIn>
-        <div className="min-h-screen bg-gradient-to-b from-white to-gray-100 p-8">
+        <div className="min-h-screen bg-gradient-to-b from-white to-gray-100 p-4 md:p-8">
           <div className="max-w-4xl mx-auto">
-            <div className="flex items-center justify-between mb-8">
-              <h1 className="text-4xl font-bold text-gray-900 mb-8">
+            <header className="flex flex-wrap items-center justify-between mb-8">
+              <h1 className="text-3xl md:text-4xl font-bold text-gray-900">
                 Active Positions
               </h1>
-              <div className="like-count">
-                <Image src={"/like.svg"} alt="like" width={20} height={20} />
-                <span>{likeCount}</span>
+              <div className="flex items-center gap-2 text-[#f91880]">
+                <Image src="/like.svg" alt="like" width={20} height={20} />
+                <span className="text-base md:text-lg">{likeCount}</span>
               </div>
-            </div>
+            </header>
 
-            {/* Enclosed Form */}
-            <div className="bg-white p-6 shadow-lg rounded-lg border border-gray-200 mb-8">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">
+            {/* Add New Position Form */}
+            <section className="bg-white p-4 md:p-6 shadow-lg rounded-lg border border-gray-200 mb-8">
+              <h2 className="text-lg md:text-xl font-semibold text-gray-900 mb-4">
                 Add a New Position
               </h2>
-              <div className="flex items-center gap-4">
+              <div className="flex flex-col sm:flex-row items-center gap-4">
                 <input
                   type="text"
                   value={newPosition}
@@ -216,7 +231,7 @@ export default function Home() {
                 />
                 <button
                   onClick={handleAddPosition}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors w-full sm:w-auto"
                   disabled={
                     !newPosition ||
                     tweetLikes === null ||
@@ -240,11 +255,15 @@ export default function Home() {
                 </div>
               )}
               {errorMessage && (
-                <p className="text-sm text-red-500 font-semibold mt-4">
-                  {errorMessage}
-                </p>
+                <p className="text-sm text-red-500 mt-4">{errorMessage}</p>
               )}
-            </div>
+            </section>
+
+            {positions.length > 0 && (
+              <p className="text-sm text-gray-500 mt-4 mb-4 text-center">
+                {positions.length}/5 positions active
+              </p>
+            )}
 
             {/* Display Positions */}
             {isLoading ? (
@@ -252,21 +271,17 @@ export default function Home() {
                 <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
               </div>
             ) : positions.length === 0 ? (
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-                <div className="flex flex-col items-center justify-center h-64 text-center space-y-4">
-                  <AlertCircle className="w-12 h-12 text-gray-400" />
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900">
-                      No active positions
-                    </h3>
-                    <p className="text-gray-500">
-                      Start by adding a Twitter post to track
-                    </p>
-                  </div>
-                </div>
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 text-center">
+                <AlertCircle className="w-12 h-12 text-gray-400 mx-auto" />
+                <h3 className="text-lg font-semibold text-gray-900 mt-4">
+                  No active positions
+                </h3>
+                <p className="text-gray-500">
+                  Start by adding a Twitter post to track
+                </p>
               </div>
             ) : (
-              <div className="grid gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <AnimatePresence>
                   {positions.map((position) => (
                     <motion.div
@@ -275,53 +290,46 @@ export default function Home() {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, x: -20 }}
                       transition={{ duration: 0.2 }}
+                      className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 flex flex-col justify-between"
                     >
-                      <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-                        <div className="flex flex-col items-center justify-center p-6">
-                          <div className="tweet-container">
-                            <Tweet
-                              id={`${position}`.split("*")[0].split("/").pop()}
-                            />
-                          </div>
-                          <div className="flex justify-center items-center gap-4 mt-4">
-                            <p>Bought at: {`${position}`.split("*")[1]}</p>
-                            <p>
-                              Current Count:{" "}
-                              {currentLikes[position] ?? "Loading..."}
-                            </p>
-                            <button
-                              onClick={() => handleDeletePosition(position)}
-                              className="p-2 text-red-600 bg-red-50 hover:bg-red-100 hover:underline rounded-lg transition-colors"
-                              disabled={isDeleting[position]}
-                            >
-                              {isDeleting[position] ? (
-                                <Loader2 className="w-5 h-5 animate-spin mx-auto" />
-                              ) : (
-                                "Sell Position"
-                              )}
-                            </button>
-                          </div>
-                        </div>
+                      <div className="tweet-container mb-4">
+                        <Tweet id={position.split("*")[0].split("/").pop()} />
+                      </div>
+                      <div className="flex flex-col md:flex-row items-center justify-between">
+                        <p>Bought at: {position.split("*")[1]}</p>
+                        <p>
+                          Current Count:{" "}
+                          {currentLikes[position] ?? "Loading..."}
+                        </p>
+                        <button
+                          onClick={() => handleDeletePosition(position)}
+                          className="px-4 py-2 text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors mt-4 md:mt-0"
+                          disabled={isDeleting[position]}
+                        >
+                          {isDeleting[position] ? (
+                            <Loader2 className="w-5 h-5 animate-spin" />
+                          ) : (
+                            "Sell Position"
+                          )}
+                        </button>
                       </div>
                     </motion.div>
                   ))}
                 </AnimatePresence>
               </div>
             )}
-
-            {positions.length > 0 && (
-              <p className="text-sm text-gray-500 mt-4 text-center">
-                {positions.length}/5 positions active
-              </p>
-            )}
           </div>
         </div>
+
         <style jsx>{`
           .tweet-container {
             width: 90%;
             max-width: 600px;
             margin: 0 auto;
             padding: 16px 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
           }
         `}</style>
       </SignedIn>

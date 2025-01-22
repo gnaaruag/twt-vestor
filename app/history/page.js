@@ -4,6 +4,7 @@ import { Tweet } from "react-tweet";
 import { Loader2, AlertCircle } from "lucide-react";
 import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
+import Image from "next/image";
 import { SignedIn, SignedOut } from "@clerk/clerk-react";
 
 export default function History() {
@@ -11,6 +12,7 @@ export default function History() {
   const [history, setHistory] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [likeCount, setLikeCount] = useState(0);
 
   useEffect(() => {
     if (!isLoaded || !user) {
@@ -43,7 +45,6 @@ export default function History() {
         // Process history data
         const processedHistory = data.history
           .map((entry) => {
-            console.log(entry);
             const [url, likeDifference, likeCount] = entry.split("*");
             return {
               url,
@@ -55,6 +56,16 @@ export default function History() {
           .sort((a, b) => b.profitability - a.profitability); // Sort by profitability
 
         setHistory(processedHistory);
+
+        const likeCountRes = await fetch("/api/fetch-sum", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email }),
+        });
+        const likeCountData = await likeCountRes.json();
+        if (likeCountData.success) {
+          setLikeCount(likeCountData.likeCount || 0);
+        }
       } catch (err) {
         console.error(err);
         setError(err.message);
@@ -64,7 +75,7 @@ export default function History() {
     };
 
     fetchHistory();
-  }, [user]);
+  }, [user, isLoaded]);
 
   if (isLoading) {
     return (
@@ -85,7 +96,7 @@ export default function History() {
 
   if (history.length === 0) {
     return (
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <div className="flex flex-col items-center justify-center h-64 text-center space-y-4">
           <AlertCircle className="w-12 h-12 text-gray-400" />
           <h3 className="text-lg font-semibold text-gray-900">
@@ -99,20 +110,26 @@ export default function History() {
   return (
     <div>
       <SignedIn>
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">
-            Trade History
-          </h2>
-          <div className="grid gap-4">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <header className="flex flex-wrap items-center justify-between mb-8">
+            <h1 className="text-3xl md:text-4xl mt-4 font-bold text-gray-900">
+              Your History
+            </h1>
+            <div className="like-count flex items-center gap-2 text-[#f91880]">
+              <Image src="/like.svg" alt="like" width={20} height={20} />
+              <span className="text-lg md:text-xl">{likeCount}</span>
+            </div>
+          </header>
+          <main className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {history.map((item, index) => (
               <div
                 key={index}
-                className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex flex-col items-center justify-center gap-4"
+                className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 md:p-6 flex flex-col justify-between items-center gap-4"
               >
                 <Tweet id={item.url.split("/").pop()} />
-                <div className="flex justify-center items-center gap-4">
-                  <p className=" text-sm text-gray-700">
-                    Profitability: {item.profitability}
+                <div className="flex flex-col sm:flex-row justify-between items-center w-full gap-4">
+                  <p className="text-sm text-gray-700">
+                    Bought at: {item.likeCount - item.profitability}
                   </p>
                   <p className="text-sm text-gray-700">
                     Likes at Sale: {item.likeCount}
@@ -123,13 +140,17 @@ export default function History() {
                 </div>
               </div>
             ))}
-          </div>
+          </main>
         </div>
       </SignedIn>
       <SignedOut>
-        <div>
-          <p>
-            You are signed out, sign up <Link href={"/sign-up"}>here</Link>
+        <div className="text-center mt-8">
+          <p className="text-gray-700">
+            You are signed out. Sign up{" "}
+            <Link href="/sign-up" className="text-blue-600 hover:underline">
+              here
+            </Link>
+            .
           </p>
         </div>
       </SignedOut>

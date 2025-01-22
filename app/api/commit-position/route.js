@@ -44,9 +44,10 @@ export async function POST(request) {
     }
 
     const metricsData = await metricsResponse.json();
+    console.log(metricsData);
     const fetchedLikeCount = metricsData.favorite_count;
 
-    if (!fetchedLikeCount) {
+    if (fetchedLikeCount === undefined || fetchedLikeCount === null) {
       return new Response(
         JSON.stringify({ success: false, message: "Invalid tweet metrics data" }),
         { status: 400 }

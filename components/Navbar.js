@@ -42,7 +42,7 @@ const Navbar = () => {
       <SignedIn>
         <div className="navbar-container">
           <div className="navbar-header">
-            <span className="navbar-symbol">twt-investor</span>
+            <span className="navbar-symbol"><Link href={"/"}>twt-investor</Link></span>
             <button
               className="hamburger"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -182,10 +182,13 @@ const Navbar = () => {
           .navbar-links-container.open {
             max-height: 300px;
             opacity: 1;
+            text-align: center;
           }
           .navbar-links {
             flex-direction: column;
             gap: 10px;
+            justify-content: center;
+            align-items: center;
           }
           .navbar-actions {
             margin-top: 0.5em;
