@@ -73,7 +73,7 @@ const Navbar = () => {
       </SignedIn>
 
       <SignedOut>
-        <div className="navbar-guest">
+        <div className="navbar-guest flex justify-between items-center w-full">
           <span className="navbar-symbol">twt-investor</span>
           <Link href="/sign-up" className="get-started-button">
             Get Started
