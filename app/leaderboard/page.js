@@ -41,6 +41,7 @@ export default function Leaderboard() {
           <h1 className="text-2xl font-bold text-center text-gray-800 mb-6">
             Leaderboard
           </h1>
+          <p className="text-center mb-4">The leaderboard show the top 10 investors on the site</p>
           <ul className="space-y-4">
             {users.map((user, index) => (
               <li
@@ -50,10 +51,11 @@ export default function Leaderboard() {
                 <div className="text-lg font-bold text-gray-700">
                   #{index + 1}
                 </div>
-                <Image href={user.image_url || "/default-avatar.png"}
+                <Image src={user.image_url || "/default-avatar.png"}
                 alt={`${user.username}'s avatar`} 
-                width={25}
-                height={25}/>
+                width={30}
+                height={30}
+                className="rounded-2xl"/>
                 <div className="flex-1">
                   <div className="text-lg font-medium text-gray-800">
                     {user.username}

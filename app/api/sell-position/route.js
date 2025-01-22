@@ -9,7 +9,10 @@ export async function POST(request) {
 
     if (!email || !url) {
       return new Response(
-        JSON.stringify({ success: false, message: "Email and URL are required" }),
+        JSON.stringify({
+          success: false,
+          message: "Email and URL are required",
+        }),
         { status: 400 }
       );
     }
@@ -31,7 +34,10 @@ export async function POST(request) {
     const positionIndex = user.positions.indexOf(url);
     if (positionIndex === -1) {
       return new Response(
-        JSON.stringify({ success: false, message: "Position not found in user's positions" }),
+        JSON.stringify({
+          success: false,
+          message: "Position not found in user's positions",
+        }),
         { status: 404 }
       );
     }
@@ -45,6 +51,28 @@ export async function POST(request) {
         body: JSON.stringify({ id: tweetId }),
       }
     );
+
+    if (metricsResponse.status === 404) {
+      // Remove the position from the user's positions array
+      user.positions.splice(positionIndex, 1);
+
+      // Add the difference to the user's history array
+      user.history.push(
+        baseUrl + "*" + "rugpulled" + "*" + "rugpulled" 
+      );
+      await user.save();
+
+      return new Response(
+        JSON.stringify({
+          success: true,
+          message: "get rugpulled loser",
+          likeDifference: 0,
+          updatedLikeCount: user.likeCount,
+          history: user.history,
+        }),
+        { status: 404 }
+      );
+    }
 
     if (!metricsResponse.ok) {
       const errorMessage = await metricsResponse.text();
@@ -63,7 +91,10 @@ export async function POST(request) {
 
     if (!currentLikeCount) {
       return new Response(
-        JSON.stringify({ success: false, message: "Invalid tweet metrics data" }),
+        JSON.stringify({
+          success: false,
+          message: "Invalid tweet metrics data",
+        }),
         { status: 400 }
       );
     }
@@ -78,7 +109,7 @@ export async function POST(request) {
     user.positions.splice(positionIndex, 1);
 
     // Add the difference to the user's history array
-    user.history.push(baseUrl+ '*' + likeDifference + '*' + currentLikeCount );
+    user.history.push(baseUrl + "*" + likeDifference + "*" + currentLikeCount);
 
     // Save the updated user document
     await user.save();
@@ -94,9 +125,13 @@ export async function POST(request) {
       { status: 200 }
     );
   } catch (error) {
-	console.log(error);
+    console.log(error);
     return new Response(
-      JSON.stringify({ success: false, message: "Internal server error", error: error.message }),
+      JSON.stringify({
+        success: false,
+        message: "Internal server error",
+        error: error.message,
+      }),
       { status: 500 }
     );
   }

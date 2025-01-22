@@ -225,7 +225,7 @@ export default function Home() {
                   type="text"
                   value={newPosition}
                   onChange={(e) => handleInputChange(e.target.value)}
-                  placeholder="Enter Twitter/X URL"
+                  placeholder="https://x.com/gnaaruag/status/1880849482704904331"
                   className="flex-1 px-4 py-2 border border-blue-500 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow"
                   disabled={isSubmitting}
                 />
@@ -271,14 +271,29 @@ export default function Home() {
                 <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
               </div>
             ) : positions.length === 0 ? (
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 text-center">
-                <AlertCircle className="w-12 h-12 text-gray-400 mx-auto" />
-                <h3 className="text-lg font-semibold text-gray-900 mt-4">
-                  No active positions
-                </h3>
-                <p className="text-gray-500">
-                  Start by adding a Twitter post to track
-                </p>
+              <div>
+                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 text-center">
+                  <AlertCircle className="w-12 h-12 text-gray-400 mx-auto" />
+                  <h3 className="text-lg font-semibold text-gray-900 mt-4">
+                    No active positions
+                  </h3>
+                  <p className="text-gray-500">
+                    Start by adding a Twitter post to track
+                  </p>
+                </div>
+                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex mt-2 justify-center items-center text-left">
+                <ul className="list-disc mt-2 text-gray-700  flex flex-col gap-2 max-w-1/4">
+                  <li>On this app, likes are currency, maximize it.</li>
+                  <li>
+                    To buy a post, submit post link to add positions section
+                  </li>
+                  <li>To start off you get 1000 likes</li>
+                  <li>A post costs its current like count to buy</li>
+                  <li>Buy low, sell High</li>
+                  <li>You can buy atmost 5 posts at any given time</li>
+                  <li>You might end up on the leaderboard so show your best self by uploading a custom pfp</li>
+                </ul>
+                </div>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

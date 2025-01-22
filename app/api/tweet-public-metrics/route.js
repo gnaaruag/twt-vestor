@@ -28,9 +28,17 @@ export async function POST(request) {
 		  { status: response.status }
 		);
 	  }
+
+	  if(response.status === 404){
+		return new Response(
+			JSON.stringify({ success: false, message: "They deleted the tweet, get rugpulled loser.", error: error.message }),
+			{ status: 404 }
+		  );
+	  }
   
 	  // Parse the external API response
 	  const data = await response.json();
+	  console.log(data)
   
 	  // Extract and return only the favorite count
 	  return new Response(
@@ -41,6 +49,7 @@ export async function POST(request) {
 		{ status: 200 }
 	  );
 	} catch (error) {
+		console.log(error);
 	  return new Response(
 		JSON.stringify({ success: false, message: "Internal server error", error: error.message }),
 		{ status: 500 }

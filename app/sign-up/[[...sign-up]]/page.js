@@ -19,7 +19,7 @@ export default function Home() {
   else {
     return (
       <div className="flex items-center justify-center pt-4">
-      <p>Already signed up, <Link href={"/home"}>Go to hom</Link></p>
+      <p>Already signed up, <Link href={"/home"}>Go to home</Link></p>
     </div>
     );
   }

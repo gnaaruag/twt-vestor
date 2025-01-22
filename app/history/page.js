@@ -42,19 +42,40 @@ export default function History() {
 
         const data = await response.json();
 
-        // Process history data
         const processedHistory = data.history
           .map((entry) => {
             const [url, likeDifference, likeCount] = entry.split("*");
+
+            const isNumeric = (value) =>
+              !isNaN(value) && value !== null && value !== undefined;
+
             return {
               url,
-              likeDifference: parseInt(likeDifference, 10),
-              likeCount: parseInt(likeCount, 10),
-              profitability: parseInt(likeDifference, 10),
+              likeDifference: isNumeric(likeDifference)
+                ? Number(likeDifference)
+                : "rugpulled",
+              likeCount: isNumeric(likeCount) ? Number(likeCount) : "rugpulled",
+              profitability: isNumeric(likeDifference)
+                ? Number(likeDifference)
+                : "rugpulled",
             };
           })
-          .sort((a, b) => b.profitability - a.profitability); // Sort by profitability
-
+          .sort((a, b) => {
+            if (
+              a.profitability === "rugpulled" &&
+              b.profitability === "rugpulled"
+            ) {
+              return 0;
+            }
+            if (a.profitability === "rugpulled") {
+              return 1;
+            }
+            if (b.profitability === "rugpulled") {
+              return -1;
+            }
+            return b.profitability - a.profitability;
+          });
+          console.log(processedHistory)
         setHistory(processedHistory);
 
         const likeCountRes = await fetch("/api/fetch-sum", {
@@ -129,13 +150,13 @@ export default function History() {
                 <Tweet id={item.url.split("/").pop()} />
                 <div className="flex flex-col sm:flex-row justify-between items-center w-full gap-4">
                   <p className="text-sm text-gray-700">
-                    Bought at: {item.likeCount - item.profitability}
+                    Bought at Likes: {item.likeCount - item.likeDifference || "rugpulled"}
                   </p>
                   <p className="text-sm text-gray-700">
-                    Likes at Sale: {item.likeCount}
+                    Sold at: {item.likeCount || "rugpulled"}
                   </p>
                   <p className="text-sm text-gray-700">
-                    Likes Gained: {item.likeDifference}
+                    Profitability: {item.profitability}
                   </p>
                 </div>
               </div>
