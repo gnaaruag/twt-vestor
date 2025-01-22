@@ -4,6 +4,7 @@ import Link from "next/link";
 
 export default function Home() {
   const { user } = useUser();
+  
 
   if (!user) {
     return (
@@ -16,10 +17,12 @@ export default function Home() {
   }
 
   else {
-    <div>
+    return (
+      <div className="flex items-center justify-center pt-4">
       <p>Already signed up, <Link href={"/home"}>Go to hom</Link></p>
     </div>
+    );
   }
 
-  1;
+  ;
 }

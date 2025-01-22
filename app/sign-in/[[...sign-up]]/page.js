@@ -1,6 +1,6 @@
 "use client";
 import { SignIn, useUser } from "@clerk/nextjs";
-import { useRouter } from "next/router";
+import Link from "next/link";
 
 export default function Home() {
   const { user } = useUser();
@@ -13,12 +13,11 @@ export default function Home() {
       </div>
     );
   }
-  const router = useRouter();
-
-  if (!user) {
-    router.push("/");
-    return null;
+  else {
+    return (
+      <div className="flex items-center justify-center pt-4">
+      <p>Already signed in, <Link href={"/home"}>Go to home</Link></p>
+    </div>
+    );
   }
-
-  1;
 }

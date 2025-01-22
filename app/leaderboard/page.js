@@ -3,6 +3,8 @@
 import { SignedIn, SignedOut } from "@clerk/clerk-react";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
+
 export default function Leaderboard() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -35,7 +37,7 @@ export default function Leaderboard() {
   return (
     <div>
       <SignedIn>
-        <div className="max-w-3xl mx-auto p-6 bg-gray-100 rounded-lg shadow-lg">
+        <div className="max-w-3xl mx-auto p-6 mt-4 bg-gray-100 rounded-lg shadow-lg">
           <h1 className="text-2xl font-bold text-center text-gray-800 mb-6">
             Leaderboard
           </h1>
@@ -48,11 +50,10 @@ export default function Leaderboard() {
                 <div className="text-lg font-bold text-gray-700">
                   #{index + 1}
                 </div>
-                <img
-                  src={user.image_url || "/default-avatar.png"}
-                  alt={`${user.username}'s avatar`}
-                  className="w-12 h-12 rounded-full object-cover"
-                />
+                <Image href={user.image_url || "/default-avatar.png"}
+                alt={`${user.username}'s avatar`} 
+                width={25}
+                height={25}/>
                 <div className="flex-1">
                   <div className="text-lg font-medium text-gray-800">
                     {user.username}
