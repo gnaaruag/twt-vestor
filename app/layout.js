@@ -1,5 +1,11 @@
 import { Geist, Geist_Mono } from "next/font/google";
-import { ClerkProvider, SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import {
+  ClerkProvider,
+  SignInButton,
+  SignedIn,
+  SignedOut,
+  UserButton,
+} from "@clerk/nextjs";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -28,8 +34,13 @@ export default function RootLayout({ children }) {
         >
           {/* Signed Out View */}
           <Navbar />
-          {children}
-          <Footer />
+          <div className="flex flex-col min-h-screen">
+            <main className="flex-grow">
+              {/* Your page content */}
+              {children}
+            </main>
+            <Footer />
+          </div>
         </body>
       </html>
     </ClerkProvider>
