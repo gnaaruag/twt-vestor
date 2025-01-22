@@ -47,7 +47,7 @@ export async function POST(req) {
     });
   } catch (err) {
     console.error("Error: Could not verify webhook:", err);
-    return new NextResponse("Error: Verification error", { status: 400 });
+    return new NextResponse("Error: Verification error" + err, { status: 400 });
   }
 
   const eventType = evt.type;
